@@ -1,0 +1,65 @@
+version: "3"
+
+services:
+  client:
+    build:
+      context: .
+      dockerfile: hosts/client/Dockerfile
+    container_name: client
+    hostname: client
+    stdin_open: true
+    tty: true
+    cap_add:
+      - ALL
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "8080:80"
+    mac_address: 02:42:c0:a8:00:0a
+    networks:
+      network:
+        ipv4_address: 192.168.0.10
+
+  attacker:
+    build:
+      context: .
+      dockerfile: hosts/attacker/Dockerfile
+    container_name: attacker
+    hostname: attacker
+    stdin_open: true
+    tty: true
+    cap_add:
+      - ALL
+    privileged: true
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "8081:80"
+    mac_address: 02:42:c0:a8:00:14
+    networks:
+      network:
+        ipv4_address: 192.168.0.20
+
+  server:
+    build:
+      context: .
+      dockerfile: hosts/server/Dockerfile
+    container_name: server
+    hostname: server
+    stdin_open: true
+    tty: true
+    cap_add:
+      - ALL
+    mac_address: 02:42:c0:a8:00:1e
+    networks:
+      network:
+        ipv4_address: 192.168.0.30
+
+networks:
+  network:
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.0.0/24"
+    driver_opts:
+      com.docker.network.bridge.name: netsec_lab_if

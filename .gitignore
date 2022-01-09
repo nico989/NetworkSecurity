@@ -1,0 +1,8 @@
+# Folder
+.idea
+target
+.settings
+out
+
+# File
+sh.exe.stackdump

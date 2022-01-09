@@ -1,0 +1,43 @@
+# Download ubuntu image with gui
+FROM dorowu/ubuntu-desktop-lxde-vnc:focal-lxqt
+
+#
+# LABELs
+#
+LABEL authors="Carlo Corradini, Giovanni Zotta, Nicoló Vinci"
+
+#
+# ARGs
+#
+# Background image
+ARG BACKGROUND_IMAGE
+# Disable Prompt During Packages Installation
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Change password to 'password'
+RUN echo "root:password" | chpasswd
+
+#
+# Install tools
+#
+RUN apt-get update
+RUN apt-get -y install \
+    iputils-ping \
+    net-tools \
+    iproute2 \
+    arping \
+    traceroute \
+    vim \
+    nano
+
+# Copy basic .vimrc
+COPY shared/.vimrc /root/.vimrc
+
+#
+# Background image
+#
+RUN mkdir /root/media
+COPY ${BACKGROUND_IMAGE} /root/media/background.png
+RUN sed -i.bak "s~^\(Wallpaper=\).*~\1/root/media/background.png~" /root/.config/pcmanfm-qt/lxqt/settings.conf \
+        && sed -i.bak "s~^\(WallpaperMode=\).*~\1center~" /root/.config/pcmanfm-qt/lxqt/settings.conf \
+        && sed -i.bak "s~^\(BgColor=\).*~\1#333333~" /root/.config/pcmanfm-qt/lxqt/settings.conf

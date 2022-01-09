@@ -1,0 +1,32 @@
+# Download ubuntu image
+FROM ubuntu
+
+#
+# LABELs
+#
+LABEL authors="Carlo Corradini, Giovanni Zotta, Nicoló Vinci"
+
+#
+# ARGs
+#
+# Disable Prompt During Packages Installation
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Change password to 'password'
+RUN echo "root:password" | chpasswd
+
+#
+# Install tools
+#
+RUN apt-get update
+RUN apt-get -y install \
+    iputils-ping \
+    net-tools \
+    iproute2 \
+    arping \
+    traceroute \
+    vim \
+    nano
+
+# Copy basic .vimrc
+COPY shared/.vimrc /root/.vimrc
